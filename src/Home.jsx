@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchRandomProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/get_random_products?count=3');
+        const data = await response.json();
+        console.log('Random Products:', data);
+        setProducts(data);
+      } catch (error) {
+        console.error('Error fetching random products:', error);
+      }
+    };
+
+    fetchRandomProducts();
+  }, []);
+
   return (
     <>
       <div class="product-section">
@@ -22,48 +39,22 @@ const Home = () => {
                 </a>
               </p>
             </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-              <a class="product-item" href="cart.html">
-                <img
-                  src="public/assets/images/product-1.png"
-                  class="img-fluid product-thumbnail"
-                />
-                <h3 class="product-title">Nordic Chair</h3>
-                <strong class="product-price">$5000.00</strong>
-
-                <span class="icon-cross">
-                  <img src="public/assets/images/cross.svg" class="img-fluid" />
-                </span>
-              </a>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-              <a class="product-item" href="cart.html">
-                <img
-                  src="public/assets/images/product-2.png"
-                  class="img-fluid product-thumbnail"
-                />
-                <h3 class="product-title">Kruzo Aero Chair</h3>
-                <strong class="product-price">$7800.00</strong>
-
-                <span class="icon-cross">
-                  <img src="public/assets/images/cross.svg" class="img-fluid" />
-                </span>
-              </a>
-            </div>
-            <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-              <a class="product-item" href="cart.html">
-                <img
-                  src="public/assets/images/product-3.png"
-                  class="img-fluid product-thumbnail"
-                />
-                <h3 class="product-title">Ergonomic Chair</h3>
-                <strong class="product-price">$4300.00</strong>
-
-                <span class="icon-cross">
-                  <img src="public/assets/images/cross.svg" class="img-fluid" />
-                </span>
-              </a>
-            </div>
+            {products.map((product, index) => (
+              <div key={index} class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                <a class="product-item" href="cart.html">
+                  <img
+                    src={`http://localhost:5000/uploads/${product.pimage}`}
+                    class="img-fluid product-thumbnail"
+                    alt={product.pname}
+                  />
+                  <h3 class="product-title">{product.pname}</h3>
+                  <strong class="product-price">₹{product.pprice}</strong>
+                  <span class="icon-cross">
+                    <img src="public/assets/images/cross.svg" class="img-fluid" alt="Add to cart" />
+                  </span>
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </div>
